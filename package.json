@@ -1,9 +1,24 @@
 {
-  "dependencies": {
-    "@vitalets/google-translate-api": "^9.2.1",
-    "axios": "^1.7.9",
-    "dotenv": "^16.4.7",
-    "google-translate-api-x": "^10.7.2",
-    "node-telegram-bot-api": "^0.66.0"
-  }
+  "name": "my-telegram-bot-anime",
+  "version": "1.0.0",
+  "description": "Telegram bot for anime",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+"dependencies": {
+  "axios": "^0.27.2",
+  "node-telegram-bot-api": "^0.55.0",
+  "dotenv": "^16.0.0"
+}
+
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "license": "MIT"
 }

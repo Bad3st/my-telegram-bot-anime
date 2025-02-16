@@ -38,23 +38,27 @@ bot.on('message', async (msg) => {
 
     bot.sendMessage(chatId, 'Ищем аниме... Подожди немного ⏳');
 
-    try {
-        const response = await axios.get(`https://shikimori.one/api/animes?search=${encodeURIComponent(text)}`);
-        const results = response.data;
+try {
+    const searchUrl = `https://animego.org/search/all?q=${encodeURIComponent(text)}`;
+    const response = await axios.get(searchUrl);
+    const html = response.data;
 
-        if (results.length > 0) {
-            const anime = results[0];
-            const title = anime.russian || anime.name;
-            const url = `https://shikimori.one${anime.url}`;
-            const synopsis = anime.description || 'Описание недоступно.';
-            bot.sendMessage(chatId, `Нашёл для тебя! 😎  \n🎌 *${title}*  \n📖 ${synopsis}  \n🔗 [Смотреть на Shikimori](${url})`);
-        } else {
-            bot.sendMessage(chatId, '🥲 Не нашёл аниме с таким названием... Попробуй написать по-другому.');
-        }
-    } catch (error) {
-        logMessage(`Ошибка: ${error.message}`);
-        bot.sendMessage(chatId, '🚨 Что-то пошло не так... Попробуй ещё раз чуть позже.');
+    // Ищем первую ссылку на аниме в результатах поиска
+    const regex = /<a class="h5" href="(\/anime\/[^"]+)"[^>]*>(.*?)<\/a>/;
+    const match = regex.exec(html);
+
+    if (match) {
+        const animeUrl = `https://animego.org${match[1]}`;
+        const title = match[2];
+        bot.sendMessage(chatId, `Нашёл для тебя! 😎  \n🎌 *${title}*  \n🔗 [Смотреть на AnimeGo](${animeUrl})`);
+    } else {
+        bot.sendMessage(chatId, '🥲 Не нашёл аниме с таким названием... Попробуй написать по-другому.');
     }
+} catch (error) {
+    logMessage(`Ошибка: ${error.message}`);
+    bot.sendMessage(chatId, '🚨 Что-то пошло не так... Попробуй ещё раз чуть позже.');
+}
+
 });
 
 // Автоперезапуск при сбоях
