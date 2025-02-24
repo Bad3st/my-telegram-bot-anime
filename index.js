@@ -35,10 +35,15 @@ bot.on('message', async (msg) => {
 
     try {
         const searchUrl = encodeURI(`https://animego.org/search/all?q=${text}`);
-        const response = await axios.get(searchUrl);
-        const $ = cheerio.load(response.data);
+        const response = await axios.get(searchUrl, {
+            headers: { "User-Agent": "Mozilla/5.0" } // Имитация браузера
+        });
 
+        console.log(response.data); // Выводим HTML в лог
+
+        const $ = cheerio.load(response.data);
         const firstAnime = $('.h5 a').first();
+
         if (firstAnime.length) {
             const animeUrl = `https://animego.org${firstAnime.attr('href')}`;
             const title = firstAnime.text().trim();
@@ -48,6 +53,6 @@ bot.on('message', async (msg) => {
         }
     } catch (error) {
         bot.sendMessage(chatId, '🚨 Ошибка! Попробуй ещё раз позже.');
-        console.error(error);
+        console.error("Ошибка при запросе:", error.message);
     }
 });
